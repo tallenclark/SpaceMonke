@@ -6,8 +6,8 @@ if (-not ($PSVersionTable.PSEdition -eq "Core")) {
 }
 
 & $buildScript NDK_PROJECT_PATH=$PSScriptRoot APP_BUILD_SCRIPT=$PSScriptRoot/Android.mk NDK_APPLICATION_MK=$PSScriptRoot/Application.mk -j 4
-& adb push libs/arm64-v8a/libjumphigher.so /sdcard/Android/data/com.AnotherAxiom.GorillaTag/files/mods/libjumphigher.so
+& adb push libs/arm64-v8a/libspacemonke.so /sdcard/Android/data/com.AnotherAxiom.GorillaTag/files/mods/libspacemonke.so
 & adb shell am force-stop com.AnotherAxiom.GorillaTag
 & adb shell am start com.AnotherAxiom.GorillaTag/com.unity3d.player.UnityPlayerActivity
 & adb logcat -c
-& adb logcat | Select-String "JumpHigher"
+& adb logcat | Select-String "SpaceMonke"
