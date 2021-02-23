@@ -16,6 +16,9 @@ Logger& getLogger()
     return *logger;
 }
 
+bool allowSpaceMonke = true;
+bool resetSpeed = false;
+
 // this is how to make a method hook, it follows the convention hookname, returntype, if an instance method, a reference to self, and then the args
 MAKE_HOOK_OFFSETLESS(Player_Awake, void, Il2CppObject* self)
 {
@@ -28,36 +31,44 @@ MAKE_HOOK_OFFSETLESS(Player_Awake, void, Il2CppObject* self)
     float jumpMultiplier = CRASH_UNLESS(il2cpp_utils::GetFieldValue<float>(self, "jumpMultiplier"));
     float velocityLimit = CRASH_UNLESS(il2cpp_utils::GetFieldValue<float>(self, "velocityLimit"));
     float maxJumpSpeed = CRASH_UNLESS(il2cpp_utils::GetFieldValue<float>(self, "maxJumpSpeed"));
+    
     // logging it so we know what it was
     getLogger().info("jumpMultiplier was: %.2f\nVelocityLimit was: %.2f\nMaxJumpSpeed was: %.2f", jumpMultiplier, velocityLimit, maxJumpSpeed);
-    
-    // setting it to 40
-    CRASH_UNLESS(il2cpp_utils::SetFieldValue(self, "jumpMultiplier", 40.0f));
-    CRASH_UNLESS(il2cpp_utils::SetFieldValue(self, "velocityLimit", 0.01f));
-    CRASH_UNLESS(il2cpp_utils::SetFieldValue(self, "maxJumpSpeed", 40.0f));
-
-    // reading the value again to show it was actually changed
-    jumpMultiplier = CRASH_UNLESS(il2cpp_utils::GetFieldValue<float>(self, "jumpMultiplier"));
-    velocityLimit = CRASH_UNLESS(il2cpp_utils::GetFieldValue<float>(self, "velocityLimit"));
-    maxJumpSpeed = CRASH_UNLESS(il2cpp_utils::GetFieldValue<float>(self, "maxJumpSpeed"));
-
-    // logging again
-    getLogger().info("jumpMultiplier is now: %.2f\nVelocityLimit is now: %.2f\nMaxJumpSpeed is now: %.2f", jumpMultiplier, velocityLimit, maxJumpSpeed);
 
     // run the original code, because otherwise the player awake code will never be ran and this could cause issues, tthis can be done at anytime during the hook
     Player_Awake(self);
 }
 
-MAKE_HOOK_OFFSETLESS(VRRig_SetJumpMultiplier, void, Il2CppObject* self, float jumpMultiplier)
+MAKE_HOOK_OFFSETLESS(Player_Update, void, Il2CppObject* self)
 {
-    INFO("VRRig Jump Multiplier set to: %.2f, multiplying by 20 to: %.2f", jumpMultiplier, jumpMultiplier * 20.0f);
-    VRRig_SetJumpMultiplier(self, jumpMultiplier * 20.0f);
+    // if allowed, set these values
+    if (allowSpaceMonke)
+    {
+        resetSpeed = true;
+        CRASH_UNLESS(il2cpp_utils::SetFieldValue(self, "jumpMultiplier", 40.0f));
+        CRASH_UNLESS(il2cpp_utils::SetFieldValue(self, "velocityLimit", 0.01f));
+        CRASH_UNLESS(il2cpp_utils::SetFieldValue(self, "maxJumpSpeed", 40.0f));
+    } 
+    else // if not allowed
+    {
+        // speed will be reset
+        if (resetSpeed)
+        {
+            resetSpeed = false;
+            CRASH_UNLESS(il2cpp_utils::SetFieldValue(self, "jumpMultiplier", 1.1f));
+            CRASH_UNLESS(il2cpp_utils::SetFieldValue(self, "velocityLimit", 0.3f));
+            CRASH_UNLESS(il2cpp_utils::SetFieldValue(self, "maxJumpSpeed", 6.5f));
+        }
+    }
+    Player_Update(self);
 }
 
-MAKE_HOOK_OFFSETLESS(VRRig_SetJumpLimit, void, Il2CppObject* self, float jumpLimit)
+MAKE_HOOK_OFFSETLESS(PhotonNetworkController_OnJoinedRoom, void, Il2CppObject* self)
 {
-    INFO("VRRig Jump Limit set to: %.2f, multiplying by 20 to: %.2f", jumpLimit, jumpLimit * 20.0f);
-    VRRig_SetJumpLimit(self, jumpLimit * 20.0f);
+    PhotonNetworkController_OnJoinedRoom(self);
+    INFO("Room Joined!");
+    // get wether or not this is a private room
+    allowSpaceMonke = CRASH_UNLESS(il2cpp_utils::GetFieldValue<bool>(self, "isPrivate"));
 }
 
 // setup lets the modloader know the mod ID and version as defined in android.mk
@@ -80,8 +91,8 @@ extern "C" void load()
 
     // installing a hook follows the principle of logger, hookname, findmethod, where findmethod takes args namespace, class, method, argcount
     INSTALL_HOOK_OFFSETLESS(logger, Player_Awake, il2cpp_utils::FindMethodUnsafe("GorillaLocomotion", "Player", "Awake", 0));
-    INSTALL_HOOK_OFFSETLESS(logger, VRRig_SetJumpMultiplier, il2cpp_utils::FindMethodUnsafe("", "VRRig", "SetJumpMultiplier", 1));
-    INSTALL_HOOK_OFFSETLESS(logger, VRRig_SetJumpLimit, il2cpp_utils::FindMethodUnsafe("", "VRRig", "SetJumpLimit", 1));
+    INSTALL_HOOK_OFFSETLESS(logger, Player_Update, il2cpp_utils::FindMethodUnsafe("GorillaLocomotion", "Player", "Update", 0));
+    INSTALL_HOOK_OFFSETLESS(logger, PhotonNetworkController_OnJoinedRoom, il2cpp_utils::FindMethodUnsafe("", "PhotonNetworkController", "OnJoinedRoom", 0));
 
     INFO("Installed hooks!");
 }
