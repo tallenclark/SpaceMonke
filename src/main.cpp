@@ -56,16 +56,19 @@ MAKE_HOOK_OFFSETLESS(Player_Awake, void, Il2CppObject* self)
 
 MAKE_HOOK_OFFSETLESS(Player_Update, void, Il2CppObject* self)
 {
-    // we don't log in Update methods, due to this causing a flood of log messages (we only do so in debugging)
+    // we don't log in Update methods, due to this causing a flood of log messages (we only do so when debugging)
 
     // get the player transform
     Il2CppObject* transform = CRASH_UNLESS(il2cpp_utils::RunMethod(self, "get_transform"));
     // get the position from the player transfrom
     Vector3 pos = CRASH_UNLESS(il2cpp_utils::RunMethod<Vector3>(transform, "get_position"));
+
+    // if the position is below -100 (well below the map) teleport the player back to it's starting point, this is to prevent players from having to restart due to jumping out of the map
     if (pos.y < - 100.0f)
     {
         CRASH_UNLESS(il2cpp_utils::RunMethod(transform, "set_position", startPos));
     }
+
     // if allowed, set these values
     if (allowSpaceMonke)
     {
