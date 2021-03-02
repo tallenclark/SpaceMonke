@@ -73,9 +73,13 @@ MAKE_HOOK_OFFSETLESS(Player_Update, void, Il2CppObject* self)
     if (allowSpaceMonke)
     {
         resetSpeed = true;
-        CRASH_UNLESS(il2cpp_utils::SetFieldValue(self, "jumpMultiplier", (float)config.jumpMultiplier));
-        CRASH_UNLESS(il2cpp_utils::SetFieldValue(self, "velocityLimit", (float)config.velocityLimit));
-        CRASH_UNLESS(il2cpp_utils::SetFieldValue(self, "maxJumpSpeed", (float)config.maxJumpSpeed));
+        float jumpMultiplier = (40.0f * (config.multiplier / 10.0f));
+        float maxJumpSpeed = (40.0f * (config.multiplier / 10.0f));
+        float velocityLimit = 0.01f / (config.multiplier / 10.0f);
+        
+        CRASH_UNLESS(il2cpp_utils::SetFieldValue(self, "jumpMultiplier", jumpMultiplier));
+        CRASH_UNLESS(il2cpp_utils::SetFieldValue(self, "velocityLimit", velocityLimit));
+        CRASH_UNLESS(il2cpp_utils::SetFieldValue(self, "maxJumpSpeed", maxJumpSpeed));
     } 
     else // if not allowed
     {
@@ -130,7 +134,7 @@ extern "C" void load()
     if (!LoadConfig()) 
             SaveConfig();
 
-    INFO("config:\n\tjumpMultiplier is: %.2f\n\tVelocityLimit is: %.2f\n\tMaxJumpSpeed is: %.2f", config.jumpMultiplier, config.velocityLimit, config.maxJumpSpeed);
+    INFO("config:\n\t multiplier is: %.2f", config.multiplier);
     // store a reference to the logger
     Logger& logger = getLogger();
 
