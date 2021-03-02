@@ -98,8 +98,15 @@ MAKE_HOOK_OFFSETLESS(Player_Update, void, Il2CppObject* self)
 MAKE_HOOK_OFFSETLESS(PhotonNetworkController_OnJoinedRoom, void, Il2CppObject* self)
 {
     PhotonNetworkController_OnJoinedRoom(self);
-    // get wether or not this is a private room
-    allowSpaceMonke = CRASH_UNLESS(il2cpp_utils::GetFieldValue<bool>(self, "isPrivate"));
+
+    Il2CppObject* currentRoom = CRASH_UNLESS(il2cpp_utils::RunMethod("Photon.Pun", "PhotonNetwork", "get_CurrentRoom"));
+
+    if (currentRoom)
+    {
+        // get wether or not this is a private room
+        allowSpaceMonke = !CRASH_UNLESS(il2cpp_utils::RunMethod<bool>(currentRoom, "get_IsVisible"));
+    }
+    else allowSpaceMonke = true;
 
     // ? construction to switch what is logged, logs work like printf in C with the % placeholders
     INFO("Room Joined! %s", allowSpaceMonke ? "Room Was Private" : "Room Was not private");
