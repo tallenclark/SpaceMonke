@@ -9,6 +9,12 @@
 // access to our config variable, plus saving and loading the config
 #include "config.hpp"
 
+// registering our settings view needs it included
+#include "SpaceMonkeSettingsView.hpp"
+#include "custom-types/shared/register.hpp"
+#include "monkecomputer/shared/Register.hpp"
+#include "monkecomputer/shared/typedefs.h"
+
 // our modinfo, used for making the logger
 static ModInfo modInfo;
 
@@ -129,7 +135,9 @@ extern "C" void setup(ModInfo& info)
 extern "C" void load()
 {
     INFO("Hello World From Load!");
-    
+    // we require the computer mod to be loaded before we can properly load our mod
+    Modloader::requireMod("MonkeComputer", "1.0.0");
+
     // if config could not be loaded correctly, save the config so the file is there
     if (!LoadConfig()) 
             SaveConfig();
@@ -146,6 +154,12 @@ extern "C" void load()
     INSTALL_HOOK_OFFSETLESS(logger, Player_Awake, il2cpp_utils::FindMethodUnsafe("GorillaLocomotion", "Player", "Awake", 0));
     INSTALL_HOOK_OFFSETLESS(logger, Player_Update, il2cpp_utils::FindMethodUnsafe("GorillaLocomotion", "Player", "Update", 0));
     INSTALL_HOOK_OFFSETLESS(logger, PhotonNetworkController_OnJoinedRoom, il2cpp_utils::FindMethodUnsafe("", "PhotonNetworkController", "OnJoinedRoom", 0));
+
+    // Registering our custom type for the screen
+    custom_types::Register::RegisterType<SpaceMonke::SpaceMonkeSettingsView>(); 
+
+    // Registering our custom screen to the monke computer
+    GorillaUI::Register::RegisterView<SpaceMonke::SpaceMonkeSettingsView*>("Space Monke", "1.0.2");
 
     INFO("Installed hooks!");
 }
