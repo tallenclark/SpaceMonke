@@ -30,7 +30,7 @@ Logger& getLogger()
 }
 
 // some bools to keep track whether things should be done
-bool allowSpaceMonke = true;
+bool allowSpaceMonke = false;
 bool resetSpeed = false;
 
 // store where the player started
@@ -79,14 +79,14 @@ MAKE_HOOK_OFFSETLESS(Player_Update, void, Il2CppObject* self)
     if (allowSpaceMonke)
     {
         resetSpeed = true;
-        float jumpMultiplier = (40.0f * (config.multiplier / 10.0f));
-        float maxJumpSpeed = (40.0f * (config.multiplier / 10.0f));
-        float velocityLimit = 0.01f / (config.multiplier / 10.0f);
+        float jumpMultiplier = 1.1f * config.multiplier;
+        float maxJumpSpeed = 0.3f * config.multiplier;
+        float velocityLimit = 6.5f * config.multiplier;
         
         CRASH_UNLESS(il2cpp_utils::SetFieldValue(self, "jumpMultiplier", jumpMultiplier));
         CRASH_UNLESS(il2cpp_utils::SetFieldValue(self, "velocityLimit", velocityLimit));
         CRASH_UNLESS(il2cpp_utils::SetFieldValue(self, "maxJumpSpeed", maxJumpSpeed));
-    } 
+    }
     else // if not allowed
     {
         // speed will be reset
@@ -159,7 +159,7 @@ extern "C" void load()
     custom_types::Register::RegisterType<SpaceMonke::SpaceMonkeSettingsView>(); 
 
     // Registering our custom screen to the monke computer
-    GorillaUI::Register::RegisterView<SpaceMonke::SpaceMonkeSettingsView*>("Space Monke", "1.0.2");
+    GorillaUI::Register::RegisterSettingsView<SpaceMonke::SpaceMonkeSettingsView*>("Space Monke", VERSION);
 
     INFO("Installed hooks!");
 }
