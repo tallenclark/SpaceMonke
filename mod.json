@@ -1,24 +1,24 @@
 {
-    "_QPVersion": "0.1.0",
+    "_QPVersion": "0.1.1",
     "name": "Space Monke",
     "id": "SpaceMonke",
     "author": "RedBrumbler",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "packageId": "com.AnotherAxiom.GorillaTag",
-    "packageVersion": "1.0.3",
+    "packageVersion": "1.0.4",
     "type": "Gameplay",
     "dependencies": [
         {
             "id": "MonkeComputer",
-            "version": "^1.0.2",
-            "downloadIfMissing": "https://github.com/RedBrumbler/MonkeComputer/releases/download/1.0.2/MonkeComputer.qmod"
+            "version": "^1.0.3",
+            "downloadIfMissing": "https://github.com/RedBrumbler/MonkeComputer/releases/download/1.0.3/MonkeComputer.qmod"
         }
     ],
     "modFiles": [
         "libspacemonke.so"
     ],
     "libraryFiles": [
-        "libbeatsaber-hook_1_0_12.so"
+        "libbeatsaber-hook_1_2_4.so"
     ],
     "fileCopies": [
     ]

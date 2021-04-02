@@ -17,6 +17,11 @@
           "src/inline-hook"
         ]
       }
+    },
+    {
+      "id": "monkecomputer",
+      "versionRange": "*",
+      "additionalData": {}
     }
   ],
   "additionalData": {}

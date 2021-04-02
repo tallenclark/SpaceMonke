@@ -25,6 +25,7 @@ void SaveConfig()
     rapidjson::Document::AllocatorType& allocator = getConfig().config.GetAllocator();
 
     getConfig().config.AddMember("multiplier", config.multiplier, allocator);
+    getConfig().config.AddMember("enabled", config.enabled, allocator);
     getConfig().Write();
     INFO("Saved Configuration!");
 }
@@ -38,6 +39,11 @@ bool LoadConfig()
         config.multiplier = doc["multiplier"].GetDouble();
     }else if (doc.HasMember("multiplier") && doc["multiplier"].IsInt()) {
         config.multiplier = (double)doc["multiplier"].GetInt();
+    } else {
+        foundEverything = false;
+    }
+    if(doc.HasMember("enabled") && doc["enabled"].IsBool()) {
+        config.enabled = doc["enabled"].GetBool();
     } else {
         foundEverything = false;
     }

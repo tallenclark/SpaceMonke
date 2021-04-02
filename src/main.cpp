@@ -75,17 +75,25 @@ MAKE_HOOK_OFFSETLESS(Player_Update, void, Il2CppObject* self)
         CRASH_UNLESS(il2cpp_utils::RunMethod(transform, "set_position", startPos));
     }
 
-    // if allowed, set these values
-    if (allowSpaceMonke)
+    // if allowed, set these values, also check if the player even wants the mod enabled by reading the config
+    if (allowSpaceMonke && config.enabled)
     {
         resetSpeed = true;
-        float jumpMultiplier = 1.1f * config.multiplier;
-        float maxJumpSpeed = 0.3f * config.multiplier;
-        float velocityLimit = 6.5f * config.multiplier;
+        float jumpMultiplier = (10.0f * (config.multiplier / 10.0f));
+        float maxJumpSpeed = (40.0f * (config.multiplier / 10.0f));
+        float velocityLimit = 0.3f / (config.multiplier / 10.0f);
+
+        if (config.multiplier == 1.0f)
+        {
+            jumpMultiplier = 1.1f;
+            velocityLimit = 0.3f;
+            maxJumpSpeed = 6.5f;
+        }
         
         CRASH_UNLESS(il2cpp_utils::SetFieldValue(self, "jumpMultiplier", jumpMultiplier));
         CRASH_UNLESS(il2cpp_utils::SetFieldValue(self, "velocityLimit", velocityLimit));
         CRASH_UNLESS(il2cpp_utils::SetFieldValue(self, "maxJumpSpeed", maxJumpSpeed));
+        //CRASH_UNLESS(il2cpp_utils::SetFieldValue(self, "disableMovement", false));
     }
     else // if not allowed
     {
@@ -136,7 +144,7 @@ extern "C" void load()
 {
     INFO("Hello World From Load!");
     // we require the computer mod to be loaded before we can properly load our mod
-    Modloader::requireMod("MonkeComputer", "1.0.0");
+    Modloader::requireMod("MonkeComputer", "1.0.3");
 
     // if config could not be loaded correctly, save the config so the file is there
     if (!LoadConfig()) 

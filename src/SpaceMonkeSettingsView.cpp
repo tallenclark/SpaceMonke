@@ -1,6 +1,8 @@
 #include "SpaceMonkeSettingsView.hpp"
 #include "config.hpp"
 #include "monkecomputer/shared/ViewLib/CustomComputer.hpp"
+#include "monkecomputer/shared/InputHandlers/UINumberInputHandler.hpp"
+#include "monkecomputer/shared/InputHandlers/UIToggleInputHandler.hpp"
 
 DEFINE_CLASS(SpaceMonke::SpaceMonkeSettingsView);
 
@@ -10,15 +12,21 @@ namespace SpaceMonke
 {
     void SpaceMonkeSettingsView::Awake()
     {
-        if (!numberInputHandler) numberInputHandler = new UINumberInputHandler(EKeyboardKey::Enter, true);
-        numberInputHandler->number = config.multiplier * 100;
-        numberInputHandler->max = 100000;
+        numberInputHandler = new UINumberInputHandler(EKeyboardKey::Enter, true);
+        toggleInputHandler = new UIToggleInputHandler(EKeyboardKey::Option1, EKeyboardKey::Option1, true);
+
+        ((UINumberInputHandler*)numberInputHandler)->number = config.multiplier * 100;
+        ((UINumberInputHandler*)numberInputHandler)->max = 1000;
+        ((UIToggleInputHandler*)toggleInputHandler)->state = config.enabled;
     }
 
     void SpaceMonkeSettingsView::DidActivate(bool firstActivation)
     {
         std::function<void(int)> fun = std::bind(&SpaceMonkeSettingsView::EnterNumber, this, std::placeholders::_1);
-        numberInputHandler->numberCallback = fun;
+        ((UINumberInputHandler*)numberInputHandler)->numberCallback = fun;
+
+        std::function<void(bool)> fun2 = std::bind(&SpaceMonkeSettingsView::ToggleActive, this, std::placeholders::_1);
+        ((UIToggleInputHandler*)toggleInputHandler)->toggleCallback = fun2;
         Redraw();
     }
 
@@ -28,6 +36,10 @@ namespace SpaceMonke
 
         DrawHeader();
         DrawNumber();
+
+        text += "\n  Space Monke is: ";
+        text += config.enabled ? "<color=#00ff00>enabled</color>" : "<color=#ff0000>disabled</color>";
+        text += "<size=40>\n    Press Option1 to toggle enabled state\n</size>";
 
         CustomComputer::Redraw();
     }
@@ -40,17 +52,25 @@ namespace SpaceMonke
     void SpaceMonkeSettingsView::DrawNumber()
     {
         text += "\n  Configure the jump multiplier:\n";
-        text += string_format("  Multiplier: %d", numberInputHandler->number);
+        text += string_format("  Multiplier: %d", ((UINumberInputHandler*)numberInputHandler)->number);
     }
 
     void SpaceMonkeSettingsView::EnterNumber(int number)
     {
         config.multiplier = (float)number / 100.0f;
+        SaveConfig();
+    }
+
+    void SpaceMonkeSettingsView::ToggleActive(bool value)
+    {
+        config.enabled = value;
+        SaveConfig();
     }
 
     void SpaceMonkeSettingsView::OnKeyPressed(int key)
     {
-        numberInputHandler->HandleKey((EKeyboardKey)key);
+        ((UINumberInputHandler*)numberInputHandler)->HandleKey((EKeyboardKey)key);
+        ((UIToggleInputHandler*)toggleInputHandler)->HandleKey((EKeyboardKey)key);
         Redraw();
     }
 }
