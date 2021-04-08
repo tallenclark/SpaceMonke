@@ -4,7 +4,7 @@
 #include "monkecomputer/shared/InputHandlers/UINumberInputHandler.hpp"
 #include "monkecomputer/shared/InputHandlers/UIToggleInputHandler.hpp"
 
-DEFINE_CLASS(SpaceMonke::SpaceMonkeSettingsView);
+DEFINE_TYPE(SpaceMonke::SpaceMonkeSettingsView);
 
 using namespace GorillaUI;
 

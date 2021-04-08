@@ -14,6 +14,14 @@
 #include "custom-types/shared/register.hpp"
 #include "monkecomputer/shared/Register.hpp"
 #include "monkecomputer/shared/typedefs.h"
+#include "monkecomputer/shared/GorillaUI.hpp"
+#include "monkecomputer/shared/CustomQueues.hpp"
+
+// we need vector3
+#include "UnityEngine/Vector3.hpp"
+
+// only use `using namespace` in .cpp files, never in headers!
+using namespace UnityEngine;
 
 // our modinfo, used for making the logger
 static ModInfo modInfo;
@@ -123,6 +131,21 @@ MAKE_HOOK_OFFSETLESS(PhotonNetworkController_OnJoinedRoom, void, Il2CppObject* s
     {
         // get wether or not this is a private room
         allowSpaceMonke = !CRASH_UNLESS(il2cpp_utils::RunMethod<bool>(currentRoom, "get_IsVisible"));
+        
+        // create the c# string which will be the value we want to get from player prefs
+        static Il2CppString* currentQueue = il2cpp_utils::createcsstr("currentQueue", il2cpp_utils::StringType::Manual);
+        
+        // get the game type (= queue), we registered a game type to the custom pc so if that one is active the mod can be active too
+        Il2CppString* queueCS = CRASH_UNLESS(il2cpp_utils::RunMethod<Il2CppString*>("UnityEngine", "PlayerPrefs", "GetString", currentQueue, il2cpp_utils::createcsstr("DEFAULT")));
+
+        // convert the c# string to a c++ string
+        std::string queue = to_utf8(csstrtostr(queueCS));
+
+        // as said before, if the queue is SPACEMONKE, we can allow the mod
+        if (queue.find("SPACEMONKE") != std::string::npos)
+        {
+            allowSpaceMonke = true;
+        }
     }
     else allowSpaceMonke = true;
 
@@ -143,9 +166,10 @@ extern "C" void setup(ModInfo& info)
 extern "C" void load()
 {
     INFO("Hello World From Load!");
-    // we require the computer mod to be loaded before we can properly load our mod
-    Modloader::requireMod("MonkeComputer", "1.0.3");
 
+    // we require the computer mod to be inited before we can properly load our mod
+    GorillaUI::Init();
+    
     // if config could not be loaded correctly, save the config so the file is there
     if (!LoadConfig()) 
             SaveConfig();
@@ -168,6 +192,9 @@ extern "C" void load()
 
     // Registering our custom screen to the monke computer
     GorillaUI::Register::RegisterSettingsView<SpaceMonke::SpaceMonkeSettingsView*>("Space Monke", VERSION);
-
+    
+    // register a custom game type to the monke pc so that we can allow people to find public matches with space monke
+    GorillaUI::CustomQueues::add_queue("SPACEMONKE", "Space Monke", "</size=40>\n    A queue that allows users to use the Space Monke mod without it disabling.\n   Entering this queue means you give your consent to people using the space monke mod.\n</size>");
+    
     INFO("Installed hooks!");
 }

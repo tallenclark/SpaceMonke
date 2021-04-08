@@ -22,6 +22,11 @@
       "id": "monkecomputer",
       "versionRange": "*",
       "additionalData": {}
+    },
+    {
+      "id": "monkecodegen",
+      "versionRange": "*",
+      "additionalData": {}
     }
   ],
   "additionalData": {}
