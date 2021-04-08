@@ -194,7 +194,7 @@ extern "C" void load()
     GorillaUI::Register::RegisterSettingsView<SpaceMonke::SpaceMonkeSettingsView*>("Space Monke", VERSION);
     
     // register a custom game type to the monke pc so that we can allow people to find public matches with space monke
-    GorillaUI::CustomQueues::add_queue("SPACEMONKE", "Space Monke", "</size=40>\n    A queue that allows users to use the Space Monke mod without it disabling.\n   Entering this queue means you give your consent to people using the space monke mod.\n</size>");
+    GorillaUI::CustomQueues::add_queue("SPACEMONKE", "Space Monke", "<size=40>\n    A queue that allows users to use the Space Monke mod without it disabling.\n    Entering this queue means you give your consent to people using\n    the space monke mod.\n</size>");
     
     INFO("Installed hooks!");
 }
