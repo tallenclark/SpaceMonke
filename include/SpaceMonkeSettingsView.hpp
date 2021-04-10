@@ -16,7 +16,7 @@ DECLARE_CLASS_CODEGEN(SpaceMonke, SpaceMonkeSettingsView, GorillaUI::Components:
     DECLARE_INSTANCE_FIELD(void*, numberInputHandler);
     DECLARE_INSTANCE_FIELD(void*, toggleInputHandler);
 
-    REGISTER_FUNCTION(SpaceMonkeSettingsView,
+    REGISTER_FUNCTION(
         REGISTER_METHOD(Awake);
         REGISTER_METHOD(DidActivate);
         REGISTER_METHOD(Redraw);
