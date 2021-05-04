@@ -134,7 +134,7 @@ MAKE_HOOK_OFFSETLESS(PhotonNetworkController_OnJoinedRoom, void, Il2CppObject* s
         
         // create the c# string which will be the value we want to get from player prefs
         static Il2CppString* currentQueue = il2cpp_utils::createcsstr("currentQueue", il2cpp_utils::StringType::Manual);
-        
+
         // get the game type (= queue), we registered a game type to the custom pc so if that one is active the mod can be active too
         Il2CppString* queueCS = CRASH_UNLESS(il2cpp_utils::RunMethod<Il2CppString*>("UnityEngine", "PlayerPrefs", "GetString", currentQueue, il2cpp_utils::createcsstr("DEFAULT")));
 
