@@ -80,6 +80,6 @@ LOCAL_SHARED_LIBRARIES += zip
 LOCAL_SHARED_LIBRARIES += monkecomputer
 LOCAL_SHARED_LIBRARIES += monkecodegen_0_4_0
 LOCAL_LDLIBS += -llog
-LOCAL_CFLAGS += -I'extern/libil2cpp/il2cpp/libil2cpp' -isystem 'extern' -I'extern/monkecodegen/include' -DID='"SpaceMonke"' -DVERSION='"1.0.10"' -I'./shared' -I'./extern' -Wno-inaccessible-base -Wno-invalid-offsetof
+LOCAL_CFLAGS += -I'extern/libil2cpp/il2cpp/libil2cpp' -isystem 'extern' -I'extern/monkecodegen/include' -DID='"SpaceMonke"' -DVERSION='"1.1.0"' -I'./shared' -I'./extern' -Wno-inaccessible-base -Wno-invalid-offsetof
 LOCAL_C_INCLUDES += ./include ./src
 include $(BUILD_SHARED_LIBRARY)
