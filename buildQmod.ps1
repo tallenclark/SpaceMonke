@@ -10,6 +10,7 @@ if (-not ($PSVersionTable.PSEdition -eq "Core")) {
 Compress-Archive -Path  "./extern/libbeatsaber-hook_1_3_3.so",`
                         "./libs/arm64-v8a/libbeatsaber-hook_1_3_5.so",`
                         "./libs/arm64-v8a/libspacemonke.so",`
+                        "./cover.png",`
                         "./mod.json" -DestinationPath "./SpaceMonke.zip" -Update
 
 & copy-item -Force "./SpaceMonke.zip" "./SpaceMonke.qmod"

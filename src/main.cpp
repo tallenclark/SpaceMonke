@@ -143,7 +143,7 @@ MAKE_HOOK_OFFSETLESS(PhotonNetworkController_OnJoinedRoom, void, Il2CppObject* s
         std::string queue = to_utf8(csstrtostr(queueCS));
 
         // as said before, if the queue is SPACEMONKE, we can allow the mod
-        if (queue.find("SPACEMONKE") != std::string::npos)
+        if (queue.find("SPACEMONKE") != std::string::npos || queue.find("MODDED") != std::string::npos)
         {
             allowSpaceMonke = true;
         }
