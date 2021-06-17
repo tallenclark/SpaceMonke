@@ -16,9 +16,8 @@ namespace SpaceMonke
         toggleInputHandler = new UIToggleInputHandler(EKeyboardKey::Option1, EKeyboardKey::Option1, true);
 
         ((UINumberInputHandler*)numberInputHandler)->number = config.multiplier * 100;
-        ((UINumberInputHandler*)numberInputHandler)->max = 1000;
-        ((UIToggleInputHandler*)toggleInputHandler)->state = config.enabled;
-    }
+        ((UINumberInputHandler*)numberInputHandler)->max = 100000000000000000;
+        ((UIToggleInputHandler*)toggleInputHandler)->state = config.enabled;}
 
     void SpaceMonkeSettingsView::DidActivate(bool firstActivation)
     {
